@@ -1,0 +1,194 @@
+const {useState} = React;
+
+function Display({ value }) {
+  return (
+    <div className="display" id="display">
+      {value}
+    </div>
+  );
+}
+
+function Buttons({
+  value,
+  setValue,
+  decimalAllowed,
+  setDecimalAllowed
+}) {
+  //const numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3];
+  const numbers = [
+    { label: "seven", value: 7 },
+    { label: "eight", value: 8 },
+    { label: "nine", value: 9 },
+    { label: "four", value: 4 },
+    { label: "five", value: 5 },
+    { label: "six", value: 6 },
+    { label: "one", value: 1 },
+    { label: "two", value: 2 },
+    { label: "three", value: 3 }
+  ];
+  //const opertators = ["/", "*", "-", "+", "="];
+  const operators = [
+    { label: "divide", value: "/" }, //that
+    { label: "multiply", value: "*" },
+    { label: "subtract", value: "-" },
+    { label: "add", value: "+" }
+  ];
+
+  const zero = [{ label: "zero", value: "0" }];
+
+  const decimals = [{ label: "decimal", value: "." }];
+
+  const equals = [{ label: "equals", value: "=" }];
+
+  const clear = [{ label: "clear", value: "AC" }];
+
+  // if last char of value is in array:operators {value} => value's value
+
+  let onNumberButton = (number) => {
+    if (value === "0") {
+      setValue(String(number));
+    } else {
+      setValue(value + number);
+    }
+  };
+
+  let onZeroButton = (zero) => {
+    if (value === "0") {
+      return;
+    }
+    setValue(value + zero);
+  };
+
+  let onOperatorButton = (operator) => {
+    if (operators.map((operator) => operator.value).includes(value.slice(-1))) {
+      return;
+    }
+    setDecimalAllowed(0);
+    console.log(decimalAllowed);
+    return setValue(value + operator);
+  };
+
+  let onDecimalButton = (decimal) => {
+    if (decimalAllowed === 0) {
+      setValue(value + decimal);
+      setDecimalAllowed(1);
+      console.log(decimalAllowed);
+    }
+    return;
+  };
+
+  let onEqualsButton = () => {
+    setValue(String(eval(value)));
+  };
+
+  let onClearButton = () => {
+    setValue("0");
+  };
+
+  return (
+    <div>
+      <div>
+        {clear.map((cl) => (
+          <button
+            className="btn"
+            key={cl.label}
+            id={cl.label}
+            onClick={() => onClearButton(cl.value)}
+          >
+            {cl.value}
+          </button>
+        ))}
+      </div>
+      <div className="buttons">
+        <div className="numbuttons">
+          {numbers.map((num) => (
+            <button
+              className="btn"
+              key={num.label}
+              id={num.label}
+              onClick={() => onNumberButton(num.value)}
+            >
+              {num.value}
+            </button>
+          ))}
+        </div>
+
+        <div className="opbuttons">
+          {operators.map((op) => (
+            <button
+              className="btn"
+              key={op.label}
+              id={op.label}
+              onClick={() => onOperatorButton(op.value)}
+            >
+              {op.value}
+            </button>
+          ))}
+        </div>
+
+        <div className="bottom-row">
+          {zero.map((z) => (
+            <button
+              className="btn zero"
+              key={z.label}
+              id={z.label}
+              onClick={() => onZeroButton(z.value)}
+            >
+              {z.value}
+            </button>
+          ))}
+
+          {decimals.map((d) => (
+            <button
+              className="btn"
+              key={d.label}
+              id={d.label}
+              onClick={() => onDecimalButton(d.value)}
+            >
+              {d.value}
+            </button>
+          ))}
+
+          {equals.map((e) => (
+            <button
+              className="btn"
+              key={e.label}
+              id={e.label}
+              onClick={() => onEqualsButton(e.value)}
+            >
+              {e.value}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [value, setValue] = useState("0");
+  const [decimalAllowed, setDecimalAllowed] = useState(0);
+
+  return (
+    <div className="App">
+      {/* TODO: Create necessary state for display and buttons */}
+      <div className="Calculator">
+        <Display value={value} setValue={setValue} />
+        <Buttons
+          value={value}
+          setValue={setValue}
+          decimalAllowed={decimalAllowed}
+          setDecimalAllowed={setDecimalAllowed}
+        />
+      </div>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(
+  <div>
+    <App />
+  </div>,
+  rootElement
+);
